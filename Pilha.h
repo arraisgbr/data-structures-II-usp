@@ -14,27 +14,21 @@ class Pilha{
             this->elem = new T[maxSize];
         }
 
-        void push(T elemento){
+        ~Pilha(){ delete[] this->elem; }
+
+        void push(T elem){
             if(this->currSize == this->maxSize)
                 this->resize();
-            this->elem[this->currSize++] = elemento;
+            this->elem[this->currSize++] = elem;
         }
 
-        T top(){
-            return this->elem[this->currSize - 1];
-        }
+        T top(){ return this->elem[this->currSize - 1]; }
 
-        void pop(){
-            if(this->currSize > 0) this->currSize--;
-        }
+        void pop(){ if(this->currSize > 0) this->currSize--; }
 
-        int size(){
-            return this->currSize;
-        }
+        int size(){ return this->currSize; }
 
-        bool isEmpty(){
-            return (this->currSize == 0 ? true : false);
-        }
+        bool isEmpty(){ return (this->currSize == 0 ? true : false); }
     
     private:
         void resize(){
