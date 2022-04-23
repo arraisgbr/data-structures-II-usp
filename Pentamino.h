@@ -12,6 +12,8 @@ class Pentamino{
         std::pair<int,int> **pos;
 
     public:
+        Pentamino(){}
+
         Pentamino(char letter, int numVariations, std::pair<int, int> **pos){
             this->letter = letter;
             this->numVariations = numVariations;
@@ -21,6 +23,7 @@ class Pentamino{
                 this->pos[i] = pos[i];
             }
         }
+        
         ~Pentamino(){
         }
 };
@@ -218,7 +221,7 @@ Pentamino* build_X(){
     pos[0] = new std::pair<int, int>[4];
     pos[0][0] = mp(1, -1); pos[0][1] = mp(1, 0); pos[0][2] = mp(1, 1); pos[0][3] = mp(2, 0);
 
-    Pentamino *penta = new Pentamino('I', 1, pos);
+    Pentamino *penta = new Pentamino('X', 1, pos);
 
     return penta;
 }
