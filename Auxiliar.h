@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PilhaLL.h"
+
 class Position{
     public:
         int x, y;
@@ -14,6 +16,12 @@ bool verify(int **matrix, int sizeRow, int sizeColumn, int newRow, int newColumn
     if(newRow < 0 || newRow >= sizeRow || newColumn < 0 || newColumn >= sizeColumn)
         return false;
     if(matrix[newRow][newColumn] != 0)
+        return false;
+    return true;
+}
+
+bool weakVerify(int **matrix, int sizeRow, int sizeColumn, int newRow, int newColumn){
+    if(newRow < 0 || newRow >= sizeRow || newColumn < 0 || newColumn >= sizeColumn)
         return false;
     return true;
 }
@@ -46,8 +54,6 @@ bool insert_pentamino(int **matrix, int row, int column, int sizeRow, int sizeCo
 }
 
 void remove_pentamino(int **matrix, int row, int column, int sizeRow, int sizeColumn, char letter){
-    matrix[row][column] = 0;
-    
     Pentamino *pentamino;
     if(letter == 'F')
         pentamino = build_F();
@@ -82,8 +88,8 @@ void remove_pentamino(int **matrix, int row, int column, int sizeRow, int sizeCo
         for(int i = 0 ; i < 4 ; i++){
             int newRow = row + pentamino->pos[index][i].first;
             int newColumn = column + pentamino->pos[index][i].second;
-            if(verify(matrix, sizeRow, sizeColumn, newRow, newColumn)){
-                    if(matrix[newRow][newColumn] != pentamino->letter) break;
+            if(weakVerify(matrix, sizeRow, sizeColumn, newRow, newColumn)){
+                if(matrix[newRow][newColumn] != pentamino->letter) break;
                 rows[i] = newRow;
                 columns[i] = newColumn;
             }
@@ -95,8 +101,22 @@ void remove_pentamino(int **matrix, int row, int column, int sizeRow, int sizeCo
             }
         }
         if(isVariationOk){
+            matrix[row][column] = 0;
             for(int i = 0 ; i < 4 ; i++)
                 matrix[rows[i]][columns[i]] = 0;
         }
     }
+}
+
+PilhaLL<Position> free_pos(int **matrix, int rows, int columns){
+    PilhaLL<Position> positions;
+    for(int i = 0 ; i < rows ; i++){
+        for(int j = 0 ; j < columns ; j++){
+            if(matrix[i][j] == 0){
+                Position pos = Position(i, j);
+                positions.push(pos);
+            }
+        }
+    }
+    return positions;
 }
