@@ -1,5 +1,9 @@
 #pragma once
 
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include "Pentamino.h"
 #include "PilhaLL.h"
 
 class Position{
@@ -26,25 +30,19 @@ bool weakVerify(int **matrix, int sizeRow, int sizeColumn, int newRow, int newCo
     return true;
 }
 
-bool insert_pentamino(int **matrix, int row, int column, int sizeRow, int sizeColumn, Pentamino* pentamino){
-    int rows[] = {-1, -1, -1, -1};
-    int columns[] = {-1, -1, -1, -1};
-    
+bool insert_pentamino(int **matrix, int row, int column, int sizeRow, int sizeColumn, int index, Pentamino* pentamino){
+    std::vector<int> rows;
+    std::vector<int> columns;    
     int variations = pentamino->numVariations;
-    for(int index = 0 ; index < variations ; index++){
-        for(int i = 0 ; i < 4 ; i++){
-            int newRow = row + pentamino->pos[index][i].first;
-            int newColumn = column + pentamino->pos[index][i].second;
-            if(!verify(matrix, sizeRow, sizeColumn, newRow, newColumn)) break;
-            rows[i] = newRow;
-            columns[i] = newColumn;
-        }
+
+    for(int i = 0 ; i < 4 ; i++){
+        int newRow = row + pentamino->pos[index][i].first;
+        int newColumn = column + pentamino->pos[index][i].second;
+        if(!verify(matrix, sizeRow, sizeColumn, newRow, newColumn)) return false;
+        rows.push_back(newRow);
+        columns.push_back(newColumn);
     }
     
-    for(int i = 0 ; i < 4 ; i++){
-        if(rows[i] == -1 || columns[i] == -1) return false;
-    }
-
     matrix[row][column] = pentamino->letter;
 
     for(int i = 0 ; i < 4 ; i++)
@@ -53,7 +51,7 @@ bool insert_pentamino(int **matrix, int row, int column, int sizeRow, int sizeCo
     return true;
 }
 
-void remove_pentamino(int **matrix, int row, int column, int sizeRow, int sizeColumn, char letter){
+void remove_pentamino(int **matrix, int row, int column, int sizeRow, int sizeColumn, int index, char letter){
     Pentamino *pentamino;
     if(letter == 'F')
         pentamino = build_F();
@@ -81,42 +79,31 @@ void remove_pentamino(int **matrix, int row, int column, int sizeRow, int sizeCo
         pentamino = build_Z();
 
     int variations = pentamino->numVariations;
-    bool isVariationOk = true;
-    int rows[] = {-1, -1, -1, -1};
-    int columns[] = {-1, -1, -1, -1};
-    for(int index = 0 ; index < variations ; index++){
-        for(int i = 0 ; i < 4 ; i++){
-            int newRow = row + pentamino->pos[index][i].first;
-            int newColumn = column + pentamino->pos[index][i].second;
-            if(weakVerify(matrix, sizeRow, sizeColumn, newRow, newColumn)){
-                if(matrix[newRow][newColumn] != pentamino->letter) break;
-                rows[i] = newRow;
-                columns[i] = newColumn;
-            }
-        }
-        for(int i = 0 ; i < 4 ; i++){
-            if(rows[i] == -1 || columns[i] == -1){
-                isVariationOk = false;
-                break;
-            }
-        }
-        if(isVariationOk){
-            matrix[row][column] = 0;
-            for(int i = 0 ; i < 4 ; i++)
-                matrix[rows[i]][columns[i]] = 0;
+    std::vector<int> rows;
+    std::vector<int> columns;
+    for(int i = 0 ; i < 4 ; i++){
+        int newRow = row + pentamino->pos[index][i].first;
+        int newColumn = column + pentamino->pos[index][i].second;
+        if(!weakVerify(matrix, sizeRow, sizeColumn, newRow, newColumn)) return;
+        else if(matrix[newRow][newColumn] != pentamino->letter) return;
+        else{
+            rows.push_back(newRow);
+            columns.push_back(newColumn);
         }
     }
+
+    matrix[row][column] = 0;
+    for(int i = 0 ; i < 4 ; i++)
+        matrix[rows[i]][columns[i]] = 0;
+    return;
 }
 
-PilhaLL<Position> free_pos(int **matrix, int rows, int columns){
-    PilhaLL<Position> positions;
+void print_matrix(int **matrix, int rows, int columns){
     for(int i = 0 ; i < rows ; i++){
         for(int j = 0 ; j < columns ; j++){
-            if(matrix[i][j] == 0){
-                Position pos = Position(i, j);
-                positions.push(pos);
-            }
+            if(matrix[i][j] != 0 && matrix[i][j] != 1) std::cout << char(matrix[i][j]) << " ";
+            else std::cout << matrix[i][j] << " ";
         }
+        std::cout << std::endl;
     }
-    return positions;
 }
