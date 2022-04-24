@@ -9,6 +9,7 @@ class Pentamino{
     public:
         char letter;
         int numVariations;
+        int currVariation;
         std::pair<int,int> **pos;
 
     public:
@@ -16,6 +17,7 @@ class Pentamino{
 
         Pentamino(char letter, int numVariations, std::pair<int, int> **pos){
             this->letter = letter;
+            this->currVariation = 0;
             this->numVariations = numVariations;
             this->pos = new std::pair<int, int>*[numVariations];
             for(int i = 0 ; i < this->numVariations ; i++){
