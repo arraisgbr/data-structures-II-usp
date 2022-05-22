@@ -22,14 +22,15 @@ class Node{
 template<typename Key, typename Item>
 class NodeS : public Node<Key, Item>{
     public:
+        int priority;
         NodeS *left, *right;
 
     public:
         NodeS(){}
-        NodeS(Key key, Item value){
-            super(key, value);
+        NodeS(Key key, Item value, int priority):Node<Key, Item>(key, value){
+            this->priority = priority;
             this->left = NULL;
-            this->rigth = NULL;
+            this->right = NULL;
         }
 };
 
@@ -37,12 +38,14 @@ template<typename Key, typename Item>
 class NodeRB : public Node<Key, Item>{
     public:
         COLOR cor;
-        NodeRB *left, *pai, *right;
+        NodeRB *father, *grandfather;
+        NodeRB *left, *right;
 };
 
 template<typename Key, typename Item>
 class Node23 : public Node<Key, Item>{
     public:
         bool full;
-        Node23 *left, *pai, *right;
+        Node23 *pai;
+        Node23 *left, *mid, *right;
 };
