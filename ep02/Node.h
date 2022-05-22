@@ -40,6 +40,15 @@ class NodeRB : public Node<Key, Item>{
         COLOR cor;
         NodeRB *father, *grandfather;
         NodeRB *left, *right;
+
+    public:
+        NodeRB(){}
+        NodeRB(Key key, Item value, NodeRB<Key, Item> *father, NodeRB<Key, Item> *grandfather){
+            this->key = key;
+            this->value = value;
+            this->father = father;
+            this->grandfather = grandfather;
+        }
 };
 
 template<typename Key, typename Item>
