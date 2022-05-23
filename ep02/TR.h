@@ -40,12 +40,35 @@ Item Treap<Key, Item>::value(Key key){
 
 template<typename Key, typename Item>
 int Treap<Key, Item>::rank(Key key){
-    return 1;
+    NodeS<Key, Item> *aux = this->root;
+    int ans = 0;
+    while(aux != NULL){
+        if(aux->key == key){
+            ans += aux->leftsize;
+            return ans;
+        }
+        else if(key > aux->key){
+            ans += aux->leftsize;
+            aux = aux->right;
+        }
+        else aux = aux->left;
+    }
 }
 
 template<typename Key, typename Item>
 Key Treap<Key, Item>::select(int k){
-    return 1;
+    NodeS<Key, Item> *aux = this->root;
+
+    while(aux != NULL){
+        if(aux->leftsize == k) return aux->key;
+        else if(k < aux->leftsize) aux = aux->left;
+        else {
+            k -= aux->leftsize;
+            aux = aux->right;
+        }
+    }
+
+    return -1;
 }
 
 template<typename Key, typename Item>

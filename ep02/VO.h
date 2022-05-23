@@ -58,12 +58,12 @@ Item VO<Key, Item>::value(Key key){
 
 template<typename Key, typename Item>
 int VO<Key, Item>::rank(Key key){
-    int pos = binarySearch(key) - 1;
+    int pos = binarySearch(key);
     return pos;
 }
 
 template<typename Key, typename Item>
-Key VO<Key, Item>::select(int k){ return this->array[k].key; }
+Key VO<Key, Item>::select(int k){ return this->array[k-1].key; }
 
 template<typename Key, typename Item>
 void VO<Key, Item>::print(){

@@ -29,20 +29,40 @@ void ABB<Key, Item>::add(Key key, Item value){
 
     NodeS<Key, Item> *ant = NULL;
     NodeS<Key, Item> *at = this->root;
-    while(at != NULL){
+
+    bool grow = true;
+
+    while(at != NULL && grow){
         ant = at;
         if(at->key == key){
+            grow = false;
             at->value = value;
-            return;
+            break;
         }
         else if(key > at->key) at = at->right;
-        else at = at->left;
+        else{
+            at->leftsize++;
+            at = at->left;
+        }
     }
     
-    if(key > ant->key)
-        ant->right = newNo;
-    else
-        ant->left = newNo;
+    at = this->root;
+    while(at != NULL && !grow){
+        if(at->key == key) return;
+        else if(key > at->key) at = at->right;
+        else{
+            at->leftsize--;
+            at = at->left;
+        }
+    }
+
+    if(grow){
+        if(key > ant->key)
+            ant->right = newNo;
+        else{
+            ant->left = newNo;
+        }
+    }
 }
 
 template<typename Key, typename Item>
@@ -59,10 +79,37 @@ Item ABB<Key, Item>::value(Key key){
 }
 
 template<typename Key, typename Item>
-int ABB<Key, Item>::rank(Key key){ return 1; }
+int ABB<Key, Item>::rank(Key key){
+    NodeS<Key, Item> *aux = this->root;
+    int ans = 0;
+    while(aux != NULL){
+        if(aux->key == key){
+            ans += aux->leftsize;
+            return ans;
+        }
+        else if(key > aux->key){
+            ans += aux->leftsize;
+            aux = aux->right;
+        }
+        else aux = aux->left;
+    }
+}
 
 template<typename Key, typename Item>
-Key ABB<Key, Item>::select(int k){ return k; }
+Key ABB<Key, Item>::select(int k){
+    NodeS<Key, Item> *aux = this->root;
+
+    while(aux != NULL){
+        if(aux->leftsize == k) return aux->key;
+        else if(k < aux->leftsize) aux = aux->left;
+        else {
+            k -= aux->leftsize;
+            aux = aux->right;
+        }
+    }
+
+    return -1;
+}
 
 template<typename Key, typename Item>
 void ABB<Key, Item>::print(){ preOrder(this->root); }
