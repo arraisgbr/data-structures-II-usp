@@ -10,12 +10,16 @@ class Node{
     public:
         Key key;
         Item value;
+        int leftsize;
+        int rightsize;
     
     public:
         Node(){}
         Node(Key key, Item value){
             this->key = key;
             this->value = value;
+            this->leftsize = 1;
+            this->rightsize = 1;
         }
 };
 
@@ -37,17 +41,17 @@ class NodeS : public Node<Key, Item>{
 template<typename Key, typename Item>
 class NodeRB : public Node<Key, Item>{
     public:
-        COLOR cor;
-        NodeRB *father, *grandfather;
+        COLOR color;
+        NodeRB *father;
         NodeRB *left, *right;
 
     public:
         NodeRB(){}
-        NodeRB(Key key, Item value, NodeRB<Key, Item> *father, NodeRB<Key, Item> *grandfather){
-            this->key = key;
-            this->value = value;
+        NodeRB(Key key, Item value, NodeRB<Key, Item> *father, COLOR color):Node<Key, Item>(key, value){
             this->father = father;
-            this->grandfather = grandfather;
+            this->color = color;
+            this->left = NULL;
+            this->right = NULL;
         }
 };
 
