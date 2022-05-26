@@ -1,8 +1,8 @@
 #pragma once
-#include "Tree.h"
+#include "HT.h"
 
 template<typename Key, typename Item>
-class ABB : public Tree<Key, Item>{
+class ABB : public HT<Key, Item>{
     private:
         NodeS<Key, Item> *root;
     
@@ -36,10 +36,13 @@ void ABB<Key, Item>::add(Key key, Item value){
         ant = at;
         if(at->key == key){
             grow = false;
-            at->value = value;
+            at->value += value;
             break;
         }
-        else if(key > at->key) at = at->right;
+        else if(key > at->key){
+            at->rightsize++;
+            at = at->right;
+        }
         else{
             at->leftsize++;
             at = at->left;
@@ -49,7 +52,10 @@ void ABB<Key, Item>::add(Key key, Item value){
     at = this->root;
     while(at != NULL && !grow){
         if(at->key == key) return;
-        else if(key > at->key) at = at->right;
+        else if(key > at->key){
+            at->rightsize--;
+            at = at->right;
+        }
         else{
             at->leftsize--;
             at = at->left;

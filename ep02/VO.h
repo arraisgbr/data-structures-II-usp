@@ -1,9 +1,8 @@
 #pragma once
-#include<algorithm>
-#include "Tree.h"
+#include "HT.h"
 
 template<typename Key, typename Item>
-class VO : public Tree<Key, Item>{
+class VO : public HT<Key, Item>{
     private:
         Node<Key, Item> *array;
         int size;
@@ -42,7 +41,7 @@ void VO<Key, Item>::add(Key key, Item value){
     }
     int pos = binarySearch(key);
     if(this->array[pos - 1].key == key){
-        this->array[pos - 1].value = value;
+        this->array[pos - 1].value += value;
         return;
     }
     shift(pos);

@@ -1,13 +1,13 @@
 #pragma once
-#include "Tree.h"
+#include "HT.h"
 
 template<typename Key, typename Item>
-class Treap : public Tree<Key, Item>{
+class TR : public HT<Key, Item>{
     private:
         NodeS<Key, Item> *root;
 
     public:
-        Treap(){ this->root = NULL; }
+        TR(){ this->root = NULL; }
         void add(Key key, Item value);
         Item value(Key key);
         int rank(Key key);
@@ -15,7 +15,7 @@ class Treap : public Tree<Key, Item>{
         void print();
 
     private:
-        NodeS<Key, Item>* put(NodeS<Key, Item> *node, Key key, Item value);
+        NodeS<Key, Item>* put(NodeS<Key, Item> *node, Key key, Item value, bool *grow);
         void preOrder(NodeS<Key, Item> *no);
         int isOk(NodeS<Key, Item> *node);
         NodeS<Key, Item>* left(NodeS<Key, Item> *node);
@@ -23,10 +23,29 @@ class Treap : public Tree<Key, Item>{
 };
 
 template<typename Key, typename Item>
-void Treap<Key, Item>::add(Key key, Item value){ this->root = put(this->root, key, value); }
+void TR<Key, Item>::add(Key key, Item value){
+    bool grow = true; 
+    this->root = put(this->root, key, value, &grow);
+    
+    // corrigindo tamanhos
+    if(grow == false){
+        NodeS<Key, Item> *aux = this->root;
+        while(aux != NULL){
+            if(aux->key == key) break;
+            else if(key > aux->key){
+                aux->rightsize--;
+                aux = aux->right;
+            }
+            else{
+                aux->leftsize--;
+                aux = aux->left;
+            }
+        }
+    }
+}
 
 template<typename Key, typename Item>
-Item Treap<Key, Item>::value(Key key){
+Item TR<Key, Item>::value(Key key){
     if(this->root == NULL) return NULL;
     if(this->root->key == key) return this->root->value;
     NodeS<Key, Item> *aux = this->root;
@@ -39,7 +58,7 @@ Item Treap<Key, Item>::value(Key key){
 }
 
 template<typename Key, typename Item>
-int Treap<Key, Item>::rank(Key key){
+int TR<Key, Item>::rank(Key key){
     NodeS<Key, Item> *aux = this->root;
     int ans = 0;
     while(aux != NULL){
@@ -56,7 +75,7 @@ int Treap<Key, Item>::rank(Key key){
 }
 
 template<typename Key, typename Item>
-Key Treap<Key, Item>::select(int k){
+Key TR<Key, Item>::select(int k){
     NodeS<Key, Item> *aux = this->root;
 
     while(aux != NULL){
@@ -72,28 +91,40 @@ Key Treap<Key, Item>::select(int k){
 }
 
 template<typename Key, typename Item>
-void Treap<Key, Item>::print(){ preOrder(this->root); }
+void TR<Key, Item>::print(){ preOrder(this->root); }
 
 template<typename Key, typename Item>
-NodeS<Key, Item>* Treap<Key, Item>::put(NodeS<Key, Item> *node, Key key, Item value){
+NodeS<Key, Item>* TR<Key, Item>::put(NodeS<Key, Item> *node, Key key, Item value, bool *grow){
     if(node == NULL){
         int priority = rand();
         node = new NodeS<Key, Item>(key, value, priority);
         return node;
     }
     
-    if(key == node->key) node->value = value;
-    else if(key > node->key) node->right = put(node->right, key, value);
-    else node->left = put(node->left, key, value);
-    
-    if(isOk(node) == -1) node = right(node);
-    else if(isOk(node) == 1) node = left(node);
+    if(key == node->key){
+        node->value += value;
+        *grow = false;
+    }
+    else if(key > node->key){
+        node->rightsize++;
+        node->right = put(node->right, key, value, grow);
+    }
+    else{
+        node->leftsize++;
+        node->left = put(node->left, key, value, grow);
+    }
+    if(isOk(node) == -1){
+        node = right(node);
+    }
+    else if(isOk(node) == 1){
+        node = left(node);
+    }
 
     return node;
 } 
 
 template<typename Key, typename Item>
-void Treap<Key, Item>::preOrder(NodeS<Key, Item> *no){
+void TR<Key, Item>::preOrder(NodeS<Key, Item> *no){
     if(no == NULL) return;
     std::cout << no->key << std::endl;
     preOrder(no->left);
@@ -101,24 +132,37 @@ void Treap<Key, Item>::preOrder(NodeS<Key, Item> *no){
 }
 
 template<typename Key, typename Item>
-int Treap<Key, Item>::isOk(NodeS<Key, Item> *no){
+int TR<Key, Item>::isOk(NodeS<Key, Item> *no){
     if(no->left != NULL && no->left->priority > no->priority) return -1;
     if(no->right != NULL && no->right->priority > no->priority) return 1;
     return 0;
 }
 
 template<typename Key, typename Item>
-NodeS<Key, Item>* Treap<Key, Item>::left(NodeS<Key, Item> *no){
+NodeS<Key, Item>* TR<Key, Item>::left(NodeS<Key, Item> *no){
     NodeS<Key, Item> *aux = no->right;
     no->right = aux->left;
     aux->left = no;
+
+    // leftsizes
+    aux->leftsize = 1;
+    no->rightsize = 1;
+    if(aux->left != NULL) aux->leftsize += aux->left->leftsize + aux->left->rightsize + 1;
+    if(no->right != NULL) no->rightsize += no->right->leftsize + no->right->rightsize + 1; 
     return aux;
 }
 
 template<typename Key, typename Item>
-NodeS<Key, Item>* Treap<Key, Item>::right(NodeS<Key, Item> *no){
+NodeS<Key, Item>* TR<Key, Item>::right(NodeS<Key, Item> *no){
     NodeS<Key, Item> *aux = no->left;
     no->left = aux->right;
     aux->right = no;
+    
+    // leftsizes
+    no->leftsize = 1;
+    aux->rightsize = 1;
+    if(no->left != NULL) no->leftsize += no->left->leftsize + no->left->rightsize + 1;
+    if(aux->right != NULL) aux->rightsize += aux->right->leftsize + aux->right->rightsize + 1;
+
     return aux;
 }
