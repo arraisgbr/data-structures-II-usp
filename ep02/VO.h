@@ -62,7 +62,7 @@ int VO<Key, Item>::rank(Key key){
 }
 
 template<typename Key, typename Item>
-Key VO<Key, Item>::select(int k){ return this->array[k-1].key; }
+Key VO<Key, Item>::select(int k){ return this->array[k].key; }
 
 template<typename Key, typename Item>
 void VO<Key, Item>::print(){
