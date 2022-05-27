@@ -94,7 +94,7 @@ int ABB<Key, Item>::rank(Key key){
             return ans;
         }
         else if(key > aux->key){
-            ans += aux->leftsize;
+            ans += aux->leftsize + 1;
             aux = aux->right;
         }
         else aux = aux->left;
@@ -109,7 +109,7 @@ Key ABB<Key, Item>::select(int k){
         if(aux->leftsize == k) return aux->key;
         else if(k < aux->leftsize) aux = aux->left;
         else {
-            k -= aux->leftsize;
+            k -= aux->leftsize + 1;
             aux = aux->right;
         }
     }

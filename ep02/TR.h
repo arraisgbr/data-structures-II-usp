@@ -67,7 +67,7 @@ int TR<Key, Item>::rank(Key key){
             return ans;
         }
         else if(key > aux->key){
-            ans += aux->leftsize;
+            ans += aux->leftsize + 1;
             aux = aux->right;
         }
         else aux = aux->left;
@@ -82,7 +82,7 @@ Key TR<Key, Item>::select(int k){
         if(aux->leftsize == k) return aux->key;
         else if(k < aux->leftsize) aux = aux->left;
         else {
-            k -= aux->leftsize;
+            k -= aux->leftsize + 1;
             aux = aux->right;
         }
     }
@@ -115,9 +115,17 @@ NodeS<Key, Item>* TR<Key, Item>::put(NodeS<Key, Item> *node, Key key, Item value
     }
     if(isOk(node) == -1){
         node = right(node);
+        node->leftsize = 0;
+        node->rightsize = 0;
+        if(node->left != NULL) node->leftsize = node->left->leftsize + node->left->rightsize + 1;
+        if(node->right != NULL) node->rightsize = node->right->leftsize + node->right->leftsize + 1;
     }
     else if(isOk(node) == 1){
         node = left(node);
+        node->leftsize = 0;
+        node->rightsize = 0;
+        if(node->left != NULL) node->leftsize = node->left->leftsize + node->left->rightsize + 1;
+        if(node->right != NULL) node->rightsize = node->right->leftsize + node->right->leftsize + 1;
     }
 
     return node;
@@ -144,9 +152,9 @@ NodeS<Key, Item>* TR<Key, Item>::left(NodeS<Key, Item> *no){
     no->right = aux->left;
     aux->left = no;
 
-    // leftsizes
-    aux->leftsize = 1;
-    no->rightsize = 1;
+    // leftsizes and rightsizes
+    aux->leftsize = 0;
+    no->rightsize = 0;
     if(aux->left != NULL) aux->leftsize += aux->left->leftsize + aux->left->rightsize + 1;
     if(no->right != NULL) no->rightsize += no->right->leftsize + no->right->rightsize + 1; 
     return aux;
@@ -158,9 +166,9 @@ NodeS<Key, Item>* TR<Key, Item>::right(NodeS<Key, Item> *no){
     no->left = aux->right;
     aux->right = no;
     
-    // leftsizes
-    no->leftsize = 1;
-    aux->rightsize = 1;
+    // leftsizes and rightsizes
+    no->leftsize = 0;
+    aux->rightsize = 0;
     if(no->left != NULL) no->leftsize += no->left->leftsize + no->left->rightsize + 1;
     if(aux->right != NULL) aux->rightsize += aux->right->leftsize + aux->right->rightsize + 1;
 

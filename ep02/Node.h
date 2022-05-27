@@ -18,8 +18,8 @@ class Node{
         Node(Key key, Item value){
             this->key = key;
             this->value = value;
-            this->leftsize = 1;
-            this->rightsize = 1;
+            this->leftsize = 0;
+            this->rightsize = 0;
         }
 };
 
