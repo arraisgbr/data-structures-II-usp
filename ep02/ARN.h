@@ -55,7 +55,6 @@ void ARN<Key, Item>::add(Key key, Item value){
     if(at->key == key) {
         grow = false;
         at->value += value;
-        return;
     }
 
     if(!grow){
@@ -72,14 +71,15 @@ void ARN<Key, Item>::add(Key key, Item value){
             }
         }
     }
+    else{
+        NodeRB<Key, Item> *newNode = new NodeRB<Key, Item>(key, value, at, red);
+        if(key > at->key)
+            at->right = newNode;
+        else 
+            at->left = newNode;
 
-    NodeRB<Key, Item> *newNode = new NodeRB<Key, Item>(key, value, at, red);
-    if(key > at->key)
-        at->right = newNode;
-    else 
-        at->left = newNode;
-
-    isOk(newNode);
+        isOk(newNode);
+    }
 }
 
 template<typename Key, typename Item>
@@ -134,7 +134,7 @@ void ARN<Key, Item>::print(){
 template<typename Key, typename Item>
 void ARN<Key, Item>::preOrder(NodeRB<Key, Item> *node){
     if(node == NULL) return;
-    std::cout << node->value << " ";
+    std::cout << node->key << " ";
     if(node->color) std::cout << "red" << std::endl;
     else std::cout << "black" << std::endl;
     preOrder(node->left);
@@ -184,7 +184,8 @@ void ARN<Key, Item>::isOk(NodeRB<Key, Item> *node){
 
                 grandfather->color = red;
                 verifyingNode->color = black;
-                verifyingNode->father->left = right(grandfather);
+                if(grandfather->father != NULL) grandfather->father->left = right(grandfather);
+                else this->root = right(grandfather);
             }
         }
         else{
@@ -202,7 +203,8 @@ void ARN<Key, Item>::isOk(NodeRB<Key, Item> *node){
 
                 grandfather->color = red;
                 verifyingNode->color = black;
-                verifyingNode->father->right = left(grandfather);
+                if(grandfather->father != NULL) grandfather->father->right = left(grandfather);
+                else this->root = left(grandfather);
             }
         }
     }
@@ -218,7 +220,6 @@ NodeRB<Key, Item>* ARN<Key, Item>::left(NodeRB<Key, Item> *node){
     node->father = aux;
     if(node->right != NULL)
         node->right->father = node;
-
 
     // leftsizes and rightsizes
     aux->leftsize = 0;
