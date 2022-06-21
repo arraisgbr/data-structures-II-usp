@@ -1,36 +1,15 @@
-#include<iostream>
-#include<vector>
-#include<string.h>
-
-using namespace std;
-
-void dfs(int vertice, vector<int>adj[], bool visited[]){
-    visited[vertice] = true;
-    for(auto vizinho : adj[vertice]){
-        if(!visited[vizinho]){
-            dfs(vizinho, adj, visited);
-        }
-    }
-}
+#include <iostream>
+#include <string.h>
+#include "grafos.h"
 
 int main(){
+
     int v, e; cin >> v >> e;
-    bool visited[v]; memset(visited, false, sizeof(visited));
-    vector<int> adj[v];
-    int componentes = 0;
+    std::vector<int> *adj = construir_grafo_inteiros(v, e);
 
-    for(int i = 0 ; i < e ; i++){
-        int u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    for(int i = 0 ; i < v ; i++){
-        if(visited[i] == 0){
-            dfs(i, adj, visited);
-            componentes++;
-        }
-    }
-
+    int num_componentes_conexas = calcular_componentes(&adj);
     std::cout << "Número de Componentes Conexas: " << componentes << std::endl;
+    
+    calcular_distancias(&adj);
+
 }
