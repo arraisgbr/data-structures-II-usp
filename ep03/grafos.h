@@ -12,6 +12,8 @@ void bfs(int vertice, std::vector<int> *adj, bool *visitados, int *distancias);
 
 int calcular_componentes(std::vector<int> *adj, int num_vertices);
 
+void identificar_componentes(std::vector<int> *adj, int num_vertices);
+
 void calcular_distancias(std::vector<int> *adj, int num_vertices); 
 
-void imprimir_distancias(int vertice, int num_vertices, int *distancias);
+void imprimir_distancias(int vertice, int *distancias, int num_vertices);
