@@ -13,6 +13,8 @@ int main(){
 
     int escolha_inicial;
     int num_vertices;
+    int num_componentes;
+    int *tamanho_componentes;
     std::vector<int> *adj;
 
     do{
@@ -29,22 +31,26 @@ int main(){
             std::cout << "Digite respectivamente o número de vértices e o número de arestas: ";
             std::cin >> num_vertices >> num_arestas;
             adj = construir_grafo_inteiros(num_vertices, num_arestas);
-            identificar_componentes(adj, num_vertices);
+            tamanho_componentes = identificar_componentes(adj, num_vertices, num_componentes);
+            std::cout << "Número de componentes conexas: " << num_componentes << std::endl;
+            for(int i = 0 ; i < num_componentes ; i++)
+                std::cout << "Tamanho da componente " << i+1 << ": " << tamanho_componentes[i] << std::endl;
             calcular_distancias(adj, num_vertices);
             break;
+
         case ALEATORIO:
-            int probabilidade;
+            double probabilidade;
             std::cout << "Digite respectivamente o número de vértices e a probabilidade da existência de uma aresta: ";
             std::cin >> num_vertices >> probabilidade;
             adj = construir_grafo_aleatorio(num_vertices, probabilidade);
-            testar_erdos(adj, num_vertices);
+            tamanho_componentes = identificar_componentes(adj, num_vertices, num_componentes);
+            testar_erdos(adj, num_vertices, probabilidade, tamanho_componentes, num_componentes);
             break;
+        
         case PALAVRAS:
             std::cin >> num_vertices;
             std::map<std::string, int> indices_palavras;
             adj = construir_grafo_palavras(num_vertices, indices_palavras);
-            identificar_componentes(adj, num_vertices);
-            calcular_distancias(adj, num_vertices);
             break;
     };
 

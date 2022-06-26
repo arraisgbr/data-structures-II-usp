@@ -29,7 +29,7 @@ std::vector<int>* construir_grafo_aleatorio(int num_vertices, double probabilida
     for(int u = 0 ; u < num_vertices ; u++){
         for(int v = u + 1 ; v < num_vertices ; v++){
             double aleatorio = rand() / (RAND_MAX + 1.0);
-            if(aleatorio >= probabilidade){
+            if(aleatorio <= probabilidade){
                 adj[u].push_back(v);
                 adj[v].push_back(u);
             }
@@ -78,19 +78,15 @@ int calcular_componentes(std::vector<int> *adj, int *visitados, int num_vertices
     return num_componentes;
 }
 
-void identificar_componentes(std::vector<int> *adj, int num_vertices){
+int* identificar_componentes(std::vector<int> *adj, int num_vertices, int &num_componentes){
     int *visitados = new int[num_vertices]; memset(visitados, -1, num_vertices * sizeof(int));
-    int *tamanho_componentes = new int[num_vertices]; memset(tamanho_componentes, 0, num_vertices * sizeof(int));
-
-    int num_componentes = calcular_componentes(adj, visitados, num_vertices);
+    num_componentes = calcular_componentes(adj, visitados, num_vertices);
+    int *tamanho_componentes = new int[num_componentes]; memset(tamanho_componentes, 0, num_componentes * sizeof(int));
 
     for(int i = 0 ; i < num_vertices ; i++)
         tamanho_componentes[visitados[i]]++;
 
-    std::cout << "Número de componentes conexas: " << num_componentes << std::endl;
-
-    for(int i = 0 ; i < num_componentes ; i++)
-        std::cout << "Tamanho da componente " << i+1 << ": " << tamanho_componentes[i] << std::endl;
+    return tamanho_componentes;
 }
 
 void calcular_distancias(std::vector<int> *adj, int num_vertices){
@@ -111,6 +107,39 @@ void imprimir_distancias(int vertice_base, int *distancias, int num_vertices){
     }
 }
 
-void testar_erdos(std::vector<int> *adj, int num_vertices){
-    // toDo
+void testar_erdos(std::vector<int> *adj, int num_vertices, double probabilidade, int *tamanho_componentes, int num_componentes){
+    double np = num_vertices * probabilidade;
+    double e = 1e-2;
+    double logN = log(num_vertices);
+    double n23 = pow(num_vertices, 2/3);
+
+    std::sort(tamanho_componentes, tamanho_componentes + num_componentes);
+
+    if(np < 1 - e){
+        std::cout << "\"Como n*p < 1, o grafo quase certamente não terá componentes conexas de tamanho maior que logN.\"\n";
+        if(tamanho_componentes[num_componentes - 1] > logN)
+            std::cout << "Propriedade desrespeitada!\n";
+        else
+            std::cout << "Propriedade respeitada!\n";
+        std::cout << "A maior componente possui " << tamanho_componentes[num_componentes - 1] << " vértices.\n";
+    }
+    else if(np > 1 + e){
+        std::cout << "\"Como n*p > 1, o grafo quase certamente conterá uma componente gigante e todas as componentes conterão menos que logN vértices.\"\n";
+        bool ok = true;
+        for(int i = 0 ; i < num_componentes - 1 && ok ; i++) 
+            if(tamanho_componentes[i] > logN) ok = false;
+        if(ok)
+            std::cout << "O grafo possui uma componente gigante, propriedade respeitada!\n";
+        else
+            std::cout << "O grafo não possui uma componente gigante, propriedade desrespeitada!\n";
+        std::cout << "A maior componente possui " << tamanho_componentes[num_componentes - 1] << " vértices.\n";
+    }
+    else{
+        std::cout << "\"Como n*p próximo de 1, então o grafo quase certamente terá uma componente maior de tamanho nˆ(2/3).\"\n";
+        if(tamanho_componentes[num_componentes - 1] >= n23)
+            std::cout << "Propriedade respeitada!\n";
+        else
+            std::cout << "Propriedade desrespeitada!\n";
+        std::cout << "A maior componente possui " << tamanho_componentes[num_componentes - 1] << " vértices.\n";
+    }
 }
