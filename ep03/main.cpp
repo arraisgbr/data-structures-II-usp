@@ -38,7 +38,7 @@ int main(){
             std::cout << "Número de componentes conexas: " << num_componentes << std::endl;
             for(int i = 0 ; i < num_componentes ; i++)
                 std::cout << "Tamanho da componente " << i+1 << ": " << tamanho_componentes[i] << std::endl;
-            testar_separacao(adj, num_vertices);
+            calcular_distancias(adj, num_vertices);
             break;
 
         case ALEATORIO:
