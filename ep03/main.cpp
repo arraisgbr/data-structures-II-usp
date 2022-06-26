@@ -24,9 +24,9 @@ int main(){
         std::cout << "1) Receber grafo da entrada padrão.\n";
         std::cout << "2) Gerar grafo aleatório e testar Erdos.\n";
         std::cout << "3) Gerar grafo aleatório e testar Seis Graus de Separação.\n";
-        std::cout << "4) Gerar grafo de palavras e Testar a Distância Entre Duas Palavras.\n";
+        // std::cout << "4) Gerar grafo de palavras e Testar a Distância Entre Duas Palavras.\n";
         std::cin >> escolha_inicial;
-    } while(escolha_inicial > 4 || escolha_inicial <= 0);
+    } while(escolha_inicial > 3 || escolha_inicial <= 0);
 
     switch(escolha_inicial){
         case PADRAO:
@@ -56,11 +56,11 @@ int main(){
             testar_separacao(adj, num_vertices);
             break;
 
-        case PALAVRAS:
-            std::cin >> num_vertices;
-            std::map<std::string, int> indices_palavras;
-            adj = construir_grafo_palavras(num_vertices, indices_palavras);
-            break;
+        // case PALAVRAS:
+        //     std::cin >> num_vertices;
+        //     std::map<std::string, int> indices_palavras;
+        //     adj = construir_grafo_palavras(num_vertices, indices_palavras);
+        //     break;
     };
 
     std::cout << "Fim de execução.\n";
