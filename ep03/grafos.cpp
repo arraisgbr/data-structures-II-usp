@@ -1,19 +1,46 @@
 #include "grafos.h"
 
-std::vector<int>* construir_grafo_inteiros(int v, int e){
-    std::vector<int> *adj = new std::vector<int>[v];
+std::vector<int>* construir_grafo_inteiros(int num_vertices, int num_arestas){
+    std::vector<int> *adj = new std::vector<int>[num_vertices];
     
-    for(int i = 0 ; i < v ; i++){
+    for(int i = 0 ; i < num_vertices ; i++){
         adj[i] = std::vector<int>();
     }
 
-    for(int i = 0 ; i < e ; i++){
+    for(int i = 0 ; i < num_arestas ; i++){
+        std::cout << "Digite uma aresta do grafo no formato \"vertice_1 vertice_2\": ";
         int u, v; std::cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
 
     return adj;
+}
+
+std::vector<int>* construir_grafo_aleatorio(int num_vertices, double probabilidade){
+    std::vector<int> *adj = new std::vector<int>[num_vertices];
+
+    for(int i = 0 ; i < num_vertices ; i++){
+        adj[i] = std::vector<int>();
+    }
+
+    srand(time(0));
+
+    for(int u = 0 ; u < num_vertices ; u++){
+        for(int v = u + 1 ; v < num_vertices ; v++){
+            double aleatorio = rand() / (RAND_MAX + 1.0);
+            if(aleatorio >= probabilidade){
+                adj[u].push_back(v);
+                adj[v].push_back(u);
+            }
+        }
+    }
+
+    return adj;
+}
+
+std::vector<int>* construir_grafo_palavras(int num_vertices, std::map<std::string, int> &indices_palavras){
+    // toDo
 }
 
 void dfs(int vertice, std::vector<int> *adj, int *visitados, int componente){
@@ -82,4 +109,8 @@ void imprimir_distancias(int vertice_base, int *distancias, int num_vertices){
     for(int vertice = 0 ; vertice < num_vertices ; vertice++){
         if(vertice != vertice_base) std::cout << "A distância entre " << vertice_base << " e " << vertice << " é: " << distancias[vertice] << std::endl;
     }
+}
+
+void testar_erdos(std::vector<int> *adj, int num_vertices){
+    // toDo
 }
