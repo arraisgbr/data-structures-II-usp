@@ -6,6 +6,7 @@
 enum{
     PADRAO = 1,
     ALEATORIO,
+    SEPARACAO,
     PALAVRAS
 };
 
@@ -15,15 +16,17 @@ int main(){
     int num_vertices;
     int num_componentes;
     int *tamanho_componentes;
+    double probabilidade;
     std::vector<int> *adj;
 
     do{
         std::cout << "Escolha o modo de execução:\n";
         std::cout << "1) Receber grafo da entrada padrão.\n";
-        std::cout << "2) Gerar grafo aleatório.\n";
-        std::cout << "3) Gerar grafo de palavras.\n";
+        std::cout << "2) Gerar grafo aleatório e testar Erdos.\n";
+        std::cout << "3) Gerar grafo aleatório e testar Seis Graus de Separação.\n";
+        std::cout << "4) Gerar grafo de palavras e Testar a Distância Entre Duas Palavras.\n";
         std::cin >> escolha_inicial;
-    } while(escolha_inicial > 3 || escolha_inicial <= 0);
+    } while(escolha_inicial > 4 || escolha_inicial <= 0);
 
     switch(escolha_inicial){
         case PADRAO:
@@ -35,11 +38,10 @@ int main(){
             std::cout << "Número de componentes conexas: " << num_componentes << std::endl;
             for(int i = 0 ; i < num_componentes ; i++)
                 std::cout << "Tamanho da componente " << i+1 << ": " << tamanho_componentes[i] << std::endl;
-            calcular_distancias(adj, num_vertices);
+            testar_separacao(adj, num_vertices);
             break;
 
         case ALEATORIO:
-            double probabilidade;
             std::cout << "Digite respectivamente o número de vértices e a probabilidade da existência de uma aresta: ";
             std::cin >> num_vertices >> probabilidade;
             adj = construir_grafo_aleatorio(num_vertices, probabilidade);
@@ -47,6 +49,13 @@ int main(){
             testar_erdos(adj, num_vertices, probabilidade, tamanho_componentes, num_componentes);
             break;
         
+        case SEPARACAO:
+            std::cout << "Digite respectivamente o número de vértices e a probabilidade de duas pessoas se conhecerem: ";
+            std::cin >> num_vertices >> probabilidade;
+            adj = construir_grafo_aleatorio(num_vertices, probabilidade);
+            testar_separacao(adj, num_vertices);
+            break;
+
         case PALAVRAS:
             std::cin >> num_vertices;
             std::map<std::string, int> indices_palavras;

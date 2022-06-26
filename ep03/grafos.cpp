@@ -39,8 +39,8 @@ std::vector<int>* construir_grafo_aleatorio(int num_vertices, double probabilida
     return adj;
 }
 
+// toDo
 std::vector<int>* construir_grafo_palavras(int num_vertices, std::map<std::string, int> &indices_palavras){
-    // toDo
 }
 
 void dfs(int vertice, std::vector<int> *adj, int *visitados, int componente){
@@ -51,20 +51,27 @@ void dfs(int vertice, std::vector<int> *adj, int *visitados, int componente){
     }
 }
 
-void bfs(int vertice, std::vector<int> *adj, bool *visitados, int *distancias){
+int bfs(int vertice, std::vector<int> *adj, int num_vertices, bool *visitados, int *distancias){
+    memset(visitados, false, num_vertices * sizeof(bool));
+    memset(distancias, -1, num_vertices * sizeof(int));
+    int maior_distancia = 0;
     std::queue<int> fila;
     fila.push(vertice);
+    visitados[vertice] = true;
     distancias[vertice] = 0;
     while(!fila.empty()){
         int atual = fila.front(); fila.pop();
-        visitados[atual] = true;
-        for(auto vizinho : adj[vertice]){
+        for(auto vizinho : adj[atual]){
             if(!visitados[vizinho]){
+                visitados[vizinho] = true;
                 distancias[vizinho] = distancias[atual] + 1;
+                maior_distancia = std::max(maior_distancia, distancias[vizinho]);
                 fila.push(vizinho);
             }
         }
     }
+
+    return maior_distancia;
 }
 
 int calcular_componentes(std::vector<int> *adj, int *visitados, int num_vertices){
@@ -93,9 +100,7 @@ void calcular_distancias(std::vector<int> *adj, int num_vertices){
     bool *visitados = new bool[num_vertices];
     int *distancias = new int [num_vertices];
     for(int vertice = 0 ; vertice < num_vertices ; vertice++){
-        memset(visitados, false, num_vertices * sizeof(bool));
-        memset(distancias, -1, num_vertices * sizeof(distancias));
-        bfs(vertice, adj, visitados, distancias);
+        bfs(vertice, adj, num_vertices, visitados, distancias);
         imprimir_distancias(vertice, distancias, num_vertices);
     }
 }
@@ -142,4 +147,31 @@ void testar_erdos(std::vector<int> *adj, int num_vertices, double probabilidade,
             std::cout << "Propriedade desrespeitada!\n";
         std::cout << "A maior componente possui " << tamanho_componentes[num_componentes - 1] << " vértices.\n";
     }
+}
+
+void testar_separacao(std::vector<int> *adj, int num_vertices){
+    int num_componentes;
+    int *visitadosDFS = new int[num_vertices]; memset(visitadosDFS, -1, num_vertices * sizeof(int));
+    num_componentes = calcular_componentes(adj, visitadosDFS, num_vertices);
+    if(num_componentes > 1){
+        std::cout << "Não há uma conexão válida entre uma pessoa e qualquer outra nesse grafo.\n";
+        std::cout << "Seis graus de separação não respeitados.\n";
+        return;
+    }
+    int maior_distancia = 0;  
+    bool *visitados = new bool[num_vertices];
+    int *distancias = new int[num_vertices];
+    for(int vertice = 0 ; vertice < num_vertices ; vertice++){
+        maior_distancia = std::max(maior_distancia, bfs(vertice, adj, num_vertices, visitados, distancias));
+        if(maior_distancia > 6){
+            std::cout << "Seis graus de separação não respeitados, tente aumentar o número de vértices ou a probabilidade de duas pessoas se conhecerem.\n";
+            return;
+        }
+    }
+    std::cout << "Seis graus de separação respeitados. A maior distância entre duas pessoas no grafo é menor ou igual a 6!\n";
+    std::cout << "Maior distância entre duas pessoas é: " << maior_distancia << std::endl;
+}
+
+// toDo
+void testar_palavras(std::vector<int> *adj, int num_vertices, std::map<int, std::string> *vertices){
 }
