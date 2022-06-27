@@ -116,7 +116,7 @@ void testar_erdos(std::vector<int> *adj, int num_vertices, double probabilidade,
     double np = num_vertices * probabilidade;
     double e = 1e-2;
     double logN = log(num_vertices);
-    double n23 = pow(num_vertices, 2/3);
+    double n23 = pow(num_vertices, 2./3);
 
     std::sort(tamanho_componentes, tamanho_componentes + num_componentes);
 
