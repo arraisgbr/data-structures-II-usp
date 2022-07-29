@@ -15,3 +15,5 @@ Node* montar_arvore(std::priority_queue<Node*, std::vector<Node*>, std::greater<
 void montar_dicionario(std::string *dicionario, Node *raiz, std::string codigo);
 
 void gerar_codigo_binario(std::string conteudo, std::string *codigo_binario, std::string *dicionario);
+
+void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo);

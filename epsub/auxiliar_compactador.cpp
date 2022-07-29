@@ -57,3 +57,26 @@ void gerar_codigo_binario(std::string conteudo, std::string *codigo_binario, std
         *codigo_binario += dicionario[(unsigned int)conteudo[i]];
     }
 }
+
+void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo){
+    std::ofstream arquivo;
+    nome_arquivo.replace(nome_arquivo.end()-4, nome_arquivo.end(), ".bin");
+    arquivo.open(nome_arquivo, std::ios::binary);
+    if(arquivo.is_open()){
+        unsigned char byte = 0;
+        unsigned int j = 7;
+        for(int i = 0 ; i < codigo_binario.size() ; i++){
+            if(codigo_binario[i] == '1')
+                byte = byte | (1 << j);
+            j--;
+            if(j == 0){
+                arquivo << byte;
+                byte = 0;
+                j = 7;
+            }
+        }
+        if(j != 7) arquivo << byte;
+        arquivo.close();
+    }
+    else std::cout << "Não foi possível criar o arquivo .bin." << std::endl;
+}

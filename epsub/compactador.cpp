@@ -45,15 +45,16 @@ int main(int argc, char **argv){
     std::string dicionario[MAX];
     std::string codigo = "";
     montar_dicionario(dicionario, raiz, codigo);
-    // for(int i = 0 ; i < MAX ; i++){
-    //     if(dicionario[i].size() > 0) std::cout << "Caractere: " << (unsigned char)i << " | Código: " << dicionario[i] << std::endl;
-    // }
     #pragma endregion
 
     // gerando o código binário
     #pragma region
     std::string codigo_binario = "";
     gerar_codigo_binario(conteudo, &codigo_binario, dicionario);
-    std::cout << codigo_binario << std::endl;
+    #pragma endregion
+
+    // criando arquivo .bin
+    #pragma region
+    criar_arquivo_bin(codigo_binario, nome_arquivo);
     #pragma endregion
 }
