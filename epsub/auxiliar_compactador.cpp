@@ -18,7 +18,7 @@ void ler_arquivo(std::string nome_arquivo, std::string *conteudo){
 
 void montar_frequencia(std::string conteudo, unsigned int *frequencias){
     for(int i = 0 ; i < MAX ; i++) frequencias[i] = 0;
-    for(int i = 0 ; i < conteudo.size() ; i++) frequencias[(int)conteudo[i]]++;
+    for(int i = 0 ; i < conteudo.size() ; i++) frequencias[(unsigned int)conteudo[i]]++;
 }
 
 void montar_fila(std::priority_queue<Node*, std::vector<Node*>, std::greater<Node*>> &fila, unsigned int *frequencias){
@@ -43,11 +43,17 @@ Node* montar_arvore(std::priority_queue<Node*, std::vector<Node*>, std::greater<
 
 void montar_dicionario(std::string *dicionario, Node *raiz, std::string codigo){
     if(raiz->dir == NULL && raiz->esq == NULL){
-        dicionario[(int)raiz->letra] = codigo;
+        dicionario[(unsigned int)raiz->letra] = codigo;
         return;
     }
     std::string codigo_esq = codigo + '0';
     std::string codigo_dir = codigo + '1';
     montar_dicionario(dicionario, raiz->esq, codigo_esq);
     montar_dicionario(dicionario, raiz->dir, codigo_dir);
+}
+
+void gerar_codigo_binario(std::string conteudo, std::string *codigo_binario, std::string *dicionario){
+    for(int i = 0 ; i < conteudo.size() ; i++){
+        *codigo_binario += dicionario[(unsigned int)conteudo[i]];
+    }
 }
