@@ -10,11 +10,11 @@ int main(int argc, char **argv){
         std::cout << "Nome do arquivo não informado." << std::endl;
         return 1;
     }
+    std::string nome_arquivo = argv[1];
     #pragma endregion
 
     // lendo arquivo
     #pragma region
-    std::string nome_arquivo = argv[1];
     std::string conteudo = "";
     ler_arquivo(nome_arquivo, &conteudo);
     #pragma endregion

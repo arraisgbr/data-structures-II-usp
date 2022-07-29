@@ -63,20 +63,39 @@ void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo){
     nome_arquivo.replace(nome_arquivo.end()-4, nome_arquivo.end(), ".bin");
     arquivo.open(nome_arquivo, std::ios::binary);
     if(arquivo.is_open()){
-        unsigned char byte = 0;
-        unsigned int j = 7;
+        char byte = 0;
+        int j = 7;
         for(int i = 0 ; i < codigo_binario.size() ; i++){
             if(codigo_binario[i] == '1')
                 byte = byte | (1 << j);
             j--;
-            if(j == 0){
-                arquivo << byte;
+            if(j < 0){
+                arquivo.write(&byte, sizeof(char));
                 byte = 0;
                 j = 7;
             }
         }
-        if(j != 7) arquivo << byte;
+        if(j != 7) arquivo.write(&byte, sizeof(char));
         arquivo.close();
     }
     else std::cout << "Não foi possível criar o arquivo .bin." << std::endl;
+}
+
+void criar_arquivo_txt(Node *raiz, std::string nome_arquivo){
+    std::ifstream arquivo;
+    Node *aux = raiz;
+    arquivo.open(nome_arquivo, std::ios::binary);
+    if(arquivo.is_open()){
+        char byte;
+        while(arquivo.read(&byte, sizeof(char))){
+            for(int i = 7 ; i >= 0 ; i--){
+                if(byte & (1 << i)) aux = aux->dir;
+                else aux = aux->esq;
+                if(aux->esq == NULL && aux->dir == NULL){
+                    std::cout << aux->letra;
+                    aux = raiz;
+                }
+            }
+        }
+    }
 }
