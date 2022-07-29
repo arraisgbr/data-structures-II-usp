@@ -20,3 +20,11 @@ void montar_frequencia(std::string conteudo, unsigned int *frequencias){
     for(int i = 0 ; i < MAX ; i++) frequencias[i] = 0;
     for(int i = 0 ; i < conteudo.size() ; i++) frequencias[(int)conteudo[i]]++;
 }
+
+void montar_fila(std::priority_queue<Node, std::vector<Node>, std::greater<Node>> &fila, unsigned int *frequencias){
+    for(int i = 0 ; i < MAX ; i++){
+        if(frequencias[i] > 0){
+            fila.push({(unsigned char)i, frequencias[i], NULL, NULL});
+        }
+    }
+}
