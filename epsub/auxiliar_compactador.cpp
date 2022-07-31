@@ -82,20 +82,27 @@ void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo){
 }
 
 void criar_arquivo_txt(Node *raiz, std::string nome_arquivo){
-    std::ifstream arquivo;
+    std::ifstream arquivo_bin;
+    std::ofstream arquivo_txt;
+    std::string nome_arquivo_bin = nome_arquivo.replace(nome_arquivo.end()-4, nome_arquivo.end(), ".bin");
+    std::string nome_arquivo_txt = nome_arquivo.replace(nome_arquivo.end()-4, nome_arquivo.end(), "2.txt");
     Node *aux = raiz;
-    arquivo.open(nome_arquivo, std::ios::binary);
-    if(arquivo.is_open()){
+    arquivo_bin.open(nome_arquivo_bin, std::ios::binary);
+    arquivo_txt.open(nome_arquivo_txt, std::ios::binary);
+    if(arquivo_bin.is_open() && arquivo_txt.is_open()){
         char byte;
-        while(arquivo.read(&byte, sizeof(char))){
+        while(arquivo_bin.read(&byte, sizeof(char))){
             for(int i = 7 ; i >= 0 ; i--){
                 if(byte & (1 << i)) aux = aux->dir;
                 else aux = aux->esq;
                 if(aux->esq == NULL && aux->dir == NULL){
-                    std::cout << aux->letra;
+                    arquivo_txt << aux->letra;
                     aux = raiz;
                 }
             }
         }
+        arquivo_bin.close();
+        arquivo_txt.close();
     }
+    else std::cout << "Não foi possível abrir o arquivo necessário. " << std::endl;
 }

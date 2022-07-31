@@ -57,4 +57,9 @@ int main(int argc, char **argv){
     #pragma region
     criar_arquivo_bin(codigo_binario, nome_arquivo);
     #pragma endregion
+
+    // criando arquivo .txt
+    #pragma region
+    criar_arquivo_txt(raiz, nome_arquivo);
+    #pragma endregion
 }
