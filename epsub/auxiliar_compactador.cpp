@@ -12,6 +12,7 @@ void ler_arquivo(std::string nome_arquivo, std::string *conteudo){
             *conteudo += '\n';
         }
         arquivo.close();
+        conteudo->replace(conteudo->end()-1, conteudo->end(), "\0");
     }
     else std::cout << "Não foi possível abrir o arquivo." << std::endl;
 }
