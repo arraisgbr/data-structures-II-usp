@@ -20,4 +20,4 @@ auxiliar_compactador.o:
 	g++ auxiliar_compactador.cpp $(FLAGS) -c -o auxiliar_compactador.o
 
 clean:
-	rm -r compactar descompactar *.o
+	rm -r compactar descompactar arquivo2.txt *.o *.bin
