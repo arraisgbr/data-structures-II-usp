@@ -59,11 +59,30 @@ void gerar_codigo_binario(std::string conteudo, std::string *codigo_binario, std
     }
 }
 
-void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo){
+void gravar_arvore(Node* raiz, std::ofstream &arquivo){
+    if(raiz->letra == '+'){
+        char byte = '0';
+        arquivo.write(&byte, sizeof(char));
+    }
+    else{
+        char byte = '1';
+        char letra = raiz->letra;
+        arquivo.write(&byte, sizeof(char));
+        arquivo.write(&letra, sizeof(char));
+        return;
+    }
+    gravar_arvore(raiz->esq, arquivo);
+    gravar_arvore(raiz->dir, arquivo);
+}
+
+void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo, Node *raiz){
     std::ofstream arquivo;
     nome_arquivo.replace(nome_arquivo.end()-4, nome_arquivo.end(), ".bin");
     arquivo.open(nome_arquivo, std::ios::binary);
     if(arquivo.is_open()){
+        gravar_arvore(raiz, arquivo);
+        char delimitador = '#';
+        arquivo.write(&delimitador, sizeof(char));
         char byte = 0;
         int j = 7;
         for(int i = 0 ; i < codigo_binario.size() ; i++){
@@ -82,14 +101,33 @@ void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo){
     else std::cout << "Não foi possível criar o arquivo .bin." << std::endl;
 }
 
-void criar_arquivo_txt(Node *raiz, std::string nome_arquivo){
+Node* ler_arvore(Node* raiz, std::ifstream &arquivo){
+    char byte;
+    arquivo.read(&byte, sizeof(char));
+    if(byte == '#') return NULL;
+    else if(byte == '1'){
+        char letra;
+        arquivo.read(&letra, sizeof(char));
+        raiz->letra = letra;
+    } 
+    else{
+        raiz->esq = new Node('+', 0, NULL, NULL);
+        raiz->dir = new Node('+', 0, NULL, NULL);
+        raiz->esq = ler_arvore(raiz->esq, arquivo);
+        raiz->dir = ler_arvore(raiz->dir, arquivo);
+    }
+    return raiz;
+}
+
+void criar_arquivo_txt(std::string nome_arquivo){
     std::ifstream arquivo_bin;
     std::ofstream arquivo_txt;
     std::string nome_arquivo_bin = nome_arquivo.replace(nome_arquivo.end()-4, nome_arquivo.end(), ".bin");
     std::string nome_arquivo_txt = nome_arquivo.replace(nome_arquivo.end()-4, nome_arquivo.end(), "2.txt");
-    Node *aux = raiz;
     arquivo_bin.open(nome_arquivo_bin, std::ios::binary);
     arquivo_txt.open(nome_arquivo_txt, std::ios::binary);
+    Node *raiz = new Node('+', 0, NULL, NULL);
+    Node *aux = ler_arvore(raiz, arquivo_bin);
     if(arquivo_bin.is_open() && arquivo_txt.is_open()){
         char byte;
         while(arquivo_bin.read(&byte, sizeof(char))){

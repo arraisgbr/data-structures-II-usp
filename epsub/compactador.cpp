@@ -29,10 +29,6 @@ int main(int argc, char **argv){
     #pragma region
     std::priority_queue<Node*, std::vector<Node*>, std::greater<Node*>> fila;
     montar_fila(fila, frequencias);
-    // while(!fila.empty()){
-    //     Node *topo = fila.top(); fila.pop();
-    //     std::cout << "Caractere: " << topo->letra << " | Frequencia: " << topo->frequencia << std::endl;
-    // }
     #pragma endregion
 
     // criando a arvore de huffman
@@ -55,11 +51,6 @@ int main(int argc, char **argv){
 
     // criando arquivo .bin
     #pragma region
-    criar_arquivo_bin(codigo_binario, nome_arquivo);
-    #pragma endregion
-
-    // criando arquivo .txt
-    #pragma region
-    criar_arquivo_txt(raiz, nome_arquivo);
+    criar_arquivo_bin(codigo_binario, nome_arquivo, raiz);
     #pragma endregion
 }

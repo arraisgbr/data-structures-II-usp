@@ -16,6 +16,10 @@ void montar_dicionario(std::string *dicionario, Node *raiz, std::string codigo);
 
 void gerar_codigo_binario(std::string conteudo, std::string *codigo_binario, std::string *dicionario);
 
-void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo);
+void gravar_arvore(Node *raiz, std::ofstream &arquivo);
 
-void criar_arquivo_txt(Node *raiz, std::string nome_arquivo);
+void criar_arquivo_bin(std::string codigo_binario, std::string nome_arquivo, Node *raiz);
+
+Node* ler_arvore(Node* raiz, std::ifstream &arquivo);
+
+void criar_arquivo_txt(std::string nome_arquivo);
